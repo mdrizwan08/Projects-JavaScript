@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .game-container {
+      text-align: center;
+      background-color:antiquewhite;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      grid-template-rows: repeat(3, 80px);
+      gap: 5px;
+      margin: 20px auto;
+    }
+    .cell {
+      background-color: #87cefa;
+      border-radius: 5px;
+      font-size: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cell:hover {
+      background-color: #4682b4;
+      color: white;
+    }
+    #message {
+      font-size: 20px;
+      margin: 10px 0;
+      color:red;
+    }
+    button {
+      font-size: 16px;
+      padding: 8px 16px;
+      background-color: #87cefa;
+      border:none;
+      border-radius: 5px;
+      cursor:pointer ;
+    }
+    button:hover {
+      background-color: #4682b4;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">  
+    <h1>Tic Tac Toe</h1>
+    <div class="board" id="board"></div>
+    <div id="message"></div>
+    <button onclick="restartGame()">Restart</button>
+  </div>
+
+  <script>
+    const board = document.getElementById('board');
+    const message = document.getElementById('message');
+    let currentPlayer = 'X';
+    let cells = Array(9).fill('');
+
+    function drawBoard() {
+      board.innerHTML = '';
+      cells.forEach((cell, index) => {
+        const div = document.createElement('div');
+        div.classList.add('cell');
+        div.textContent = cell;
+        div.addEventListener('click', () => makeMove(index));
+        board.appendChild(div);
+      });
+    }
+
+    function makeMove(index) {
+      if (cells[index] === '' && !checkWinner()) {
+        cells[index] = currentPlayer;
+        drawBoard();
+        if (checkWinner()) {
+          message.textContent = `Player ${currentPlayer} wins!`;
+        } else if (cells.every(cell => cell !== '')) {
+          message.textContent = `It's a draw!`;
+        } else {
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          message.textContent = `Player ${currentPlayer}'s turn`;
+        }
+      }
+    }
+
+    function checkWinner() {
+      const winningCombos = [
+        [0,1,2], [3,4,5], [6,7,8], // rows
+        [0,3,6], [1,4,7], [2,5,8], // columns
+        [0,4,8], [2,4,6]           // diagonals
+      ];
+      return winningCombos.some(combo => {
+        const [a, b, c] = combo;
+        return cells[a] !== '' && cells[a] === cells[b] && cells[a] === cells[c];
+      });
+    }
+
+    function restartGame() {
+      currentPlayer = 'O';
+      cells = Array(9).fill('');
+      message.textContent = `Player ${currentPlayer}'s turn`;
+      drawBoard();
+    }
+
+    restartGame();
+  </script>
+</body>
+</html>
